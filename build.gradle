@@ -370,6 +370,7 @@ project("spring-context") {
 		optional("org.codehaus.groovy:groovy-all:${groovyVersion}")
 		optional("org.beanshell:bsh:2.0b4")
 		optional("org.jruby:jruby:1.7.10")
+		optional("org.clojure:clojure:1.6.0-beta2")
 		testCompile("javax.inject:javax.inject-tck:1")
 		testCompile("commons-dbcp:commons-dbcp:1.4")
 		testCompile("org.slf4j:slf4j-api:${slf4jVersion}")

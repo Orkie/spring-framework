@@ -74,6 +74,21 @@
 			</xsd:complexContent>
 		</xsd:complexType>
 	</xsd:element>
+	
+	<xsd:element name="clojure">
+		<xsd:annotation>
+			<xsd:documentation><![CDATA[
+	A Spring bean backed by a Clojure script.
+			]]></xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="dynamicScriptType">
+				<xsd:attributeGroup ref="vanillaScriptAttributes"/>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
 
 	<!-- Script Types -->
 	<xsd:complexType name="simpleScriptType">
