@@ -22,13 +22,13 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.aop.TargetSource;
 import org.springframework.aop.framework.AopInfrastructureBean;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aop.support.DelegatingIntroductionInterceptor;
 import org.springframework.asm.Type;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.BeanCreationException;
@@ -152,6 +152,9 @@ public class ScriptFactoryPostProcessor extends InstantiationAwareBeanPostProces
 
 	public static final String PROXY_TARGET_CLASS_ATTRIBUTE = Conventions.getQualifiedAttributeName(
 			ScriptFactoryPostProcessor.class, "proxyTargetClass");
+	
+	public static final String IMMUTABLE_PROPERTIES_ATTRIBUTE = Conventions.getQualifiedAttributeName(
+			ScriptFactoryPostProcessor.class, "immutableProperties");
 
 	public static final String LANGUAGE_ATTRIBUTE = Conventions.getQualifiedAttributeName(
 			ScriptFactoryPostProcessor.class, "language");
@@ -540,13 +543,22 @@ public class ScriptFactoryPostProcessor extends InstantiationAwareBeanPostProces
 	 */
 	protected BeanDefinition createScriptedObjectBeanDefinition(BeanDefinition bd, String scriptFactoryBeanName,
 			ScriptSource scriptSource, Class<?>[] interfaces) {
+		
+		Object attribute = bd.getAttribute(IMMUTABLE_PROPERTIES_ATTRIBUTE);
+		Boolean immutableProperties = (Boolean) (attribute == null ? false : attribute);
 
 		GenericBeanDefinition objectBd = new GenericBeanDefinition(bd);
 		objectBd.setFactoryBeanName(scriptFactoryBeanName);
 		objectBd.setFactoryMethodName("getScriptedObject");
 		objectBd.getConstructorArgumentValues().clear();
 		objectBd.getConstructorArgumentValues().addIndexedArgumentValue(0, scriptSource);
-		objectBd.getConstructorArgumentValues().addIndexedArgumentValue(1, interfaces);
+		if(immutableProperties) {
+			objectBd.getConstructorArgumentValues().addIndexedArgumentValue(1, scriptBeanFactory.resolveProperties(scriptFactoryBeanName, bd));
+			objectBd.getConstructorArgumentValues().addIndexedArgumentValue(2, interfaces);
+			objectBd.setPropertyValues(new MutablePropertyValues());
+		} else {
+			objectBd.getConstructorArgumentValues().addIndexedArgumentValue(1, interfaces);
+		}
 		return objectBd;
 	}
 

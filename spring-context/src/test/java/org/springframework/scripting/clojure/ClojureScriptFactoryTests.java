@@ -20,6 +20,7 @@ import java.util.Arrays;
 
 import junit.framework.TestCase;
 
+import org.springframework.aop.target.dynamic.Refreshable;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.scripting.Calculator;
@@ -29,30 +30,29 @@ public class ClojureScriptFactoryTests extends TestCase {
 	
 	public void testStaticScript() throws Exception {
 		ApplicationContext ctx = new ClassPathXmlApplicationContext("clojureContext.xml", getClass());
-
+		
 		assertTrue(Arrays.asList(ctx.getBeanNamesForType(Calculator.class)).contains("calculator"));
 		assertTrue(Arrays.asList(ctx.getBeanNamesForType(Messenger.class)).contains("messenger"));
-//
+
 		Calculator calc = (Calculator) ctx.getBean("calculator");
 		Messenger messenger = (Messenger) ctx.getBean("messenger");
-		System.out.println(messenger.getMessage());
-//
-//		assertFalse("Scripted object should not be instance of Refreshable", calc instanceof Refreshable);
-//		assertFalse("Scripted object should not be instance of Refreshable", messenger instanceof Refreshable);
-//
+
+		assertFalse("Scripted object should not be instance of Refreshable", calc instanceof Refreshable);
+		assertFalse("Scripted object should not be instance of Refreshable", messenger instanceof Refreshable);
+
 		assertEquals(calc, calc);
-//		assertEquals(messenger, messenger);
-//		assertTrue(!messenger.equals(calc));
-//		assertTrue(messenger.hashCode() != calc.hashCode());
-//		assertTrue(!messenger.toString().equals(calc.toString()));
-//
+		assertEquals(messenger, messenger);
+		assertTrue(!messenger.equals(calc));
+		assertTrue(messenger.hashCode() != calc.hashCode());
+		assertTrue(!messenger.toString().equals(calc.toString()));
+
 		assertEquals(5, calc.add(2, 3));
-//
-//		String desiredMessage = "Hello World!";
-//		assertEquals("Message is incorrect", desiredMessage, messenger.getMessage());
-//
-//		assertTrue(ctx.getBeansOfType(Calculator.class).values().contains(calc));
-//		assertTrue(ctx.getBeansOfType(Messenger.class).values().contains(messenger));
+
+		String desiredMessage = "Hello World!";
+		assertEquals("Message is incorrect", desiredMessage, messenger.getMessage());
+
+		assertTrue(ctx.getBeansOfType(Calculator.class).values().contains(calc));
+		assertTrue(ctx.getBeansOfType(Messenger.class).values().contains(messenger));
 	}
 	
 }

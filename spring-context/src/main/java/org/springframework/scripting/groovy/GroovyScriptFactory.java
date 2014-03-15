@@ -16,15 +16,16 @@
 
 package org.springframework.scripting.groovy;
 
-import java.io.IOException;
-
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyObject;
 import groovy.lang.MetaClass;
 import groovy.lang.Script;
-import org.codehaus.groovy.control.CompilationFailedException;
 
+import java.io.IOException;
+
+import org.codehaus.groovy.control.CompilationFailedException;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -288,6 +289,17 @@ public class GroovyScriptFactory implements ScriptFactory, BeanFactoryAware, Bea
 		public CachedResultHolder(Object object) {
 			this.object = object;
 		}
+	}
+
+
+	/* (non-Javadoc)
+	 * @see org.springframework.scripting.ScriptFactory#getScriptedObject(org.springframework.scripting.ScriptSource, java.util.Map, java.lang.Class[])
+	 */
+	@Override
+	public Object getScriptedObject(ScriptSource scriptSource,
+			MutablePropertyValues immutableBindings, Class<?>... actualInterfaces)
+			throws IOException, ScriptCompilationException {
+		return getScriptedObject(scriptSource, actualInterfaces);
 	}
 
 }

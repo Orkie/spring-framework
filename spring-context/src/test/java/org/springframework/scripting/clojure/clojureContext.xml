@@ -1,26 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN" "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
+<beans xmlns="http://www.springframework.org/schema/beans"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:lang="http://www.springframework.org/schema/lang"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+				http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+				http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-4.0.xsd">
 
-<beans default-lazy-init="true">
-
-	<bean class="org.springframework.scripting.support.ScriptFactoryPostProcessor"/>
-
-	<bean id="calculator" class="org.springframework.scripting.clojure.ClojureScriptFactory">
-		<constructor-arg>
-			<value>inline:
-				(reify org.springframework.scripting.Calculator
+	<lang:clojure id="calculator" immutable-properties="true">
+		<lang:inline-script>
+		(reify org.springframework.scripting.Calculator
 					(add [this x y]
 						(+ x y)))
-			</value>
- 		</constructor-arg>
-		<constructor-arg value="org.springframework.scripting.Calculator"/>
-	</bean>
+		</lang:inline-script>
+		<lang:property name="message" value="Hello World!"/>
+	</lang:clojure>
+	
+	<lang:clojure id="messenger" script-source="classpath:org/springframework/scripting/clojure/Messenger.clj" immutable-properties="true">
+		<lang:property name="message" value="Hello World!"/>
+		<lang:property name="thecalc" ref="calculator" />
+	</lang:clojure>
 
-	<bean id="messenger" class="org.springframework.scripting.clojure.ClojureScriptFactory">
-		<constructor-arg value="classpath:org/springframework/scripting/clojure/Messenger.clj"/>
-		<constructor-arg value="org.springframework.scripting.Messenger"/>
-		<property name="#'Messenger/setMessage" value="Hello World!"/>
-	</bean>
+<!-- 	<bean class="org.springframework.scripting.support.ScriptFactoryPostProcessor"/> -->
+
+<!-- 	<bean id="calculator" class="org.springframework.scripting.clojure.ClojureScriptFactory"> -->
+<!-- 		<constructor-arg> -->
+<!-- 			<value>inline: -->
+<!-- 				(reify org.springframework.scripting.Calculator -->
+<!-- 					(add [this x y] -->
+<!-- 						(+ x y))) -->
+<!-- 			</value> -->
+<!--  		</constructor-arg> -->
+<!-- 		<constructor-arg value="org.springframework.scripting.Calculator"/> -->
+<!-- 		< -->
+<!-- 	</bean> -->
+
+<!-- 	<bean id="messenger" class="org.springframework.scripting.clojure.ClojureScriptFactory"> -->
+<!-- 		<constructor-arg value=""/> -->
+<!-- 		<constructor-arg value="org.springframework.scripting.Messenger"/> -->
+<!-- 		<property name="#'Messenger/setMessage" value="Hello World!"/> -->
+<!-- 	</bean> -->
 
 <!-- 	<bean id="messengerWithConfig" class="org.springframework.scripting.bsh.BshScriptFactory" -->
 <!-- 			init-method="init" destroy-method="destroy"> -->

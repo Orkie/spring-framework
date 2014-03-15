@@ -1493,6 +1493,45 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					mbd.getResourceDescription(), beanName, "Error setting property values", ex);
 		}
 	}
+	
+	public MutablePropertyValues resolveProperties(String beanName, BeanDefinition mbd) {
+		BeanDefinitionValueResolver valueResolver = new BeanDefinitionValueResolver(this, beanName, mbd, getTypeConverter());
+
+		List<PropertyValue> original = mbd.getPropertyValues().getPropertyValueList();
+		List<PropertyValue> deepCopy = new ArrayList<PropertyValue>(original.size());
+		for (PropertyValue pv : original) {
+			if (pv.isConverted()) {
+				deepCopy.add(pv);
+			}
+			else {
+				Object originalValue = pv.getValue();
+				Object resolvedValue = valueResolver.resolveValueIfNecessary(pv, originalValue);
+				Object convertedValue = resolvedValue;
+				boolean convertible = true;
+				// Possibly store converted value in merged bean definition,
+				// in order to avoid re-conversion for every created bean instance.
+				if (resolvedValue == originalValue) {
+					if (convertible) {
+						pv.setConvertedValue(convertedValue);
+					}
+					deepCopy.add(pv);
+				}
+				else if (convertible && originalValue instanceof TypedStringValue &&
+						!((TypedStringValue) originalValue).isDynamic() &&
+						!(convertedValue instanceof Collection || ObjectUtils.isArray(convertedValue))) {
+					pv.setConvertedValue(convertedValue);
+					deepCopy.add(pv);
+				}
+				else {
+					deepCopy.add(new PropertyValue(pv, convertedValue));
+				}
+			}
+		}
+		
+		MutablePropertyValues convertedPropertyValues = new MutablePropertyValues(deepCopy);
+		convertedPropertyValues.setConverted();
+		return convertedPropertyValues;
+	}
 
 	/**
 	 * Convert the given value for the specified target property.

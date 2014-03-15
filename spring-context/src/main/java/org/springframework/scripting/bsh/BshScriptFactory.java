@@ -18,14 +18,15 @@ package org.springframework.scripting.bsh;
 
 import java.io.IOException;
 
-import bsh.EvalError;
-
+import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.scripting.ScriptCompilationException;
 import org.springframework.scripting.ScriptFactory;
 import org.springframework.scripting.ScriptSource;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
+
+import bsh.EvalError;
 
 /**
  * {@link org.springframework.scripting.ScriptFactory} implementation
@@ -198,6 +199,13 @@ public class BshScriptFactory implements ScriptFactory, BeanClassLoaderAware {
 	@Override
 	public String toString() {
 		return "BshScriptFactory: script source locator [" + this.scriptSourceLocator + "]";
+	}
+	
+	@Override
+	public Object getScriptedObject(ScriptSource scriptSource,
+			MutablePropertyValues immutableBindings, Class<?>... actualInterfaces)
+			throws IOException, ScriptCompilationException {
+		return getScriptedObject(scriptSource, actualInterfaces);
 	}
 
 }

@@ -18,8 +18,6 @@ package org.springframework.scripting.config;
 
 import java.util.List;
 
-import org.w3c.dom.Element;
-
 import org.springframework.beans.factory.config.ConstructorArgumentValues;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
@@ -32,6 +30,7 @@ import org.springframework.beans.factory.xml.XmlReaderContext;
 import org.springframework.scripting.support.ScriptFactoryPostProcessor;
 import org.springframework.util.StringUtils;
 import org.springframework.util.xml.DomUtils;
+import org.w3c.dom.Element;
 
 /**
  * BeanDefinitionParser implementation for the '{@code &lt;lang:groovy/&gt;}',
@@ -78,6 +77,8 @@ class ScriptBeanDefinitionParser extends AbstractBeanDefinitionParser {
 	private static final String PROXY_TARGET_CLASS_ATTRIBUTE = "proxy-target-class";
 
 	private static final String CUSTOMIZER_REF_ATTRIBUTE = "customizer-ref";
+	
+	private static final String IMMUTABLE_PROPERTIES_ATTRIBUTE = "immutable-properties";
 
 
 	/**
@@ -199,10 +200,17 @@ class ScriptBeanDefinitionParser extends AbstractBeanDefinitionParser {
 				cav.addIndexedArgumentValue(constructorArgNum++, new RuntimeBeanReference(customizerBeanName));
 			}
 		}
+		
+		// Intercepts properties and passes them as a constructor argument
+		String immutableProperties = element.getAttribute(IMMUTABLE_PROPERTIES_ATTRIBUTE);
+		if (StringUtils.hasText(immutableProperties)) {
+			Boolean flag = new Boolean(immutableProperties);
+			bd.setAttribute(ScriptFactoryPostProcessor.IMMUTABLE_PROPERTIES_ATTRIBUTE, flag);
+		}
 
 		// Add any property definitions that need adding.
 		parserContext.getDelegate().parsePropertyElements(element, bd);
-
+		
 		return bd;
 	}
 

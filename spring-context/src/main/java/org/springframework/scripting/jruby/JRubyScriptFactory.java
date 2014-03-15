@@ -21,7 +21,7 @@ import java.io.IOException;
 import org.jruby.RubyException;
 import org.jruby.exceptions.JumpException;
 import org.jruby.exceptions.RaiseException;
-
+import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.scripting.ScriptCompilationException;
 import org.springframework.scripting.ScriptFactory;
@@ -131,6 +131,13 @@ public class JRubyScriptFactory implements ScriptFactory, BeanClassLoaderAware {
 	@Override
 	public String toString() {
 		return "JRubyScriptFactory: script source locator [" + this.scriptSourceLocator + "]";
+	}
+	
+	@Override
+	public Object getScriptedObject(ScriptSource scriptSource,
+			MutablePropertyValues immutableBindings, Class<?>... actualInterfaces)
+			throws IOException, ScriptCompilationException {
+		return getScriptedObject(scriptSource, actualInterfaces);
 	}
 
 }

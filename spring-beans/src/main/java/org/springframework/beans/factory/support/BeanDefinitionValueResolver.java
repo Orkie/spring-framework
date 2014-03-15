@@ -54,7 +54,7 @@ import org.springframework.util.StringUtils;
  * @since 1.2
  * @see AbstractAutowireCapableBeanFactory
  */
-class BeanDefinitionValueResolver {
+public class BeanDefinitionValueResolver {
 
 	private final AbstractBeanFactory beanFactory;
 

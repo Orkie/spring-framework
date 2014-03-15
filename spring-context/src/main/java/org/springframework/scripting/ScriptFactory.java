@@ -18,6 +18,8 @@ package org.springframework.scripting;
 
 import java.io.IOException;
 
+import org.springframework.beans.MutablePropertyValues;
+
 /**
  * Script definition interface, encapsulating the configuration
  * of a specific script as well as a factory method for
@@ -76,6 +78,9 @@ public interface ScriptFactory {
 	 * @throws ScriptCompilationException if script compilation failed
 	 */
 	Object getScriptedObject(ScriptSource scriptSource, Class<?>... actualInterfaces)
+			throws IOException, ScriptCompilationException;
+	
+	Object getScriptedObject(ScriptSource scriptSource, MutablePropertyValues immutableBindings, Class<?>... actualInterfaces)
 			throws IOException, ScriptCompilationException;
 
 	/**

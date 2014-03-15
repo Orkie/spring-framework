@@ -83,7 +83,7 @@
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:complexContent>
-				<xsd:extension base="dynamicScriptType">
+				<xsd:extension base="immutableBindingScriptType">
 				<xsd:attributeGroup ref="vanillaScriptAttributes"/>
 				</xsd:extension>
 			</xsd:complexContent>
@@ -213,6 +213,20 @@
 					<xsd:annotation>
 						<xsd:documentation><![CDATA[
 	Reference to a GroovyObjectCustomizer or similar customizer bean.
+						]]></xsd:documentation>
+					</xsd:annotation>
+				</xsd:attribute>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	
+	<xsd:complexType name="immutableBindingScriptType">
+		<xsd:complexContent>
+			<xsd:extension base="simpleScriptType">
+				<xsd:attribute name="immutable-properties" type="xsd:boolean">
+					<xsd:annotation>
+						<xsd:documentation><![CDATA[
+	Flag to indicate that this script has immutable properties bound at construction time. Defaults to false.
 						]]></xsd:documentation>
 					</xsd:annotation>
 				</xsd:attribute>
